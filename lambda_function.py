@@ -146,7 +146,11 @@ def lambda_handler(event, context):
                 except Exception as e:
                     return {
                         'statusCode': 500,
-                        'body': json.dumps(str(e))
+                        'body': json.dumps('Error creating API Gateway: ' + str(e)),
+                        'headers': {
+                            'Access-Control-Allow-Origin': 'http://localhost:3000',
+                            'Access-Control-Allow-Headers': 'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'
+                        }
                     }
 
                 # Get the API ID and construct the full URL
@@ -170,7 +174,10 @@ def lambda_handler(event, context):
 
                 return {
                     'statusCode': 200,
-                    'body': json.dumps(api_url)
+                    'body': json.dumps(api_url),
+                    'headers': {
+                        'Access-Control-Allow-Origin': '*'
+                    }
                 }
             else:
                 return {
@@ -220,7 +227,10 @@ def lambda_handler(event, context):
 
             return {
                 'statusCode': 200,
-                'body': json.dumps(quantum_portals)
+                'body': json.dumps(quantum_portals),
+                'headers': {
+                   'Access-Control-Allow-Origin': '*'
+                }
             }
         else:
             return {
