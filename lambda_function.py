@@ -4,6 +4,8 @@ import boto3
 def lambda_handler(event, context):
     http_method = event.get('httpMethod')
     path = event.get('path')
+    # Initialize the API Gateway client
+    api_gateway_client = boto3.client('apigateway')
 
     if path == "/create":
         if http_method == "GET":
@@ -187,8 +189,13 @@ def lambda_handler(event, context):
                     'body': json.dumps(str(e))
                 }
 
-            # Filter APIs by name
-            quantum_portals = [api['name'] for api in apis if "QuantumPortal - " in api['name']]
+            # Extract URL and API ID from API Gateway names
+            quantum_portals = []
+            for api in apis:
+                if "QuantumPortal - " in api['name']:
+                    url = api['name'].replace("QuantumPortal - ", "")
+                    api_id = api['id']
+                    quantum_portals.append({'url': url, 'api_id': api_id})
 
             return {
                 'statusCode': 200,
@@ -204,4 +211,3 @@ def lambda_handler(event, context):
             'statusCode': 404,
             'body': json.dumps('Endpoint not found')
         }
-
