@@ -12,8 +12,29 @@ def lambda_handler(event, context):
             target_url = event.get('queryStringParameters', {}).get('targetUrl')
             
             if target_url:
-                # Generate the API name and title based on targetUrl
+                # Check if an API Gateway already exists for the targetUrl
                 api_name = "QP-" + target_url.replace('.', '-')
+                api_exists = False
+                try:
+                    api_response = api_gateway_client.get_rest_apis()
+                    apis = api_response['items']
+                    for api in apis:
+                        if "QuantumPortal - " in api['name'] and api['name'].replace("QuantumPortal - ", "") == target_url:
+                            api_exists = True
+                            break
+                except Exception as e:
+                    return {
+                        'statusCode': 500,
+                        'body': json.dumps(str(e))
+                    }
+                
+                if api_exists:
+                    return {
+                        'statusCode': 400,
+                        'body': json.dumps('API Gateway already exists for the target URL')
+                    }
+                
+                # Generate the API name and title based on targetUrl
                 api_title = "QuantumPortal - " + target_url
                 
                 # Create a new API Gateway with the provided Swagger definition
