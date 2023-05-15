@@ -148,7 +148,7 @@ def lambda_handler(event, context):
                         'statusCode': 500,
                         'body': json.dumps('Error creating API Gateway: ' + str(e)),
                         'headers': {
-                            'Access-Control-Allow-Origin': 'http://localhost:3000',
+                            'Access-Control-Allow-Origin': '*',
                             'Access-Control-Allow-Headers': 'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'
                         }
                     }
